@@ -218,7 +218,7 @@ class Level(object):
  
     # How far this world has been scrolled left/right
     world_shift = 0
-    level_limit = -1000
+    level_limit = 1000
  
     def __init__(self, player, platforms):
         """ Constructor. Pass in a handle to player. Needed for when moving
@@ -241,6 +241,12 @@ class Level(object):
         block.rect.y = 590
         block.player = self.player
         self.platform_list.add(block)
+        #Add the back wall
+        block = Platform(10, const.SCREEN_HEIGHT)
+        block.rect.x = 0
+        block.rect.y = 0
+        block.player = self.player
+        self.platform_list.add(block)
 
         # Camera
         self.camera = camera.Camera(self.level_limit,  const.SCREEN_HEIGHT)
@@ -253,9 +259,7 @@ class Level(object):
 
         self.camera.apply(self.player)
         for platform in self.platform_list:
-            #print "Plat 1 " + str(platform.rect.x)
             self.camera.apply(platform)
-            #print "Plat 2 " + str(platform.rect.x)
         for enemy in self.enemy_list:
             self.camera.apply(enemy)
  
@@ -351,13 +355,12 @@ class Level_02(Level):
 def main():
     """ Main Program """
     pygame.init()
-    lv1 = []
-    lv2 = [[210, 70, 500, 550],
+    lv1 = [[210, 70, 500, 550],
            [210, 70, 800, 400],
            [210, 70, 1000, 500],
            [210, 70, 1120, 280],
            ]
-    lv3 = [[210, 70, 500, 550],
+    lv2 = [[210, 70, 500, 550],
            [210, 70, 800, 400],
            [210, 70, 1000, 500],
            [210, 70, 1120, 280],
@@ -433,24 +436,7 @@ def main():
 #            diff = 120 - player.rect.left
 #            player.rect.left = 120
 #            current_level.shift_world(diff)
-             
-        # If the player gets to the end of the level, go to the next level
-        current_position = player.rect.x + current_level.world_shift
-        if current_position < current_level.level_limit:
-            if current_level_no < len(level_list)-1:
-                player.rect.x = 120
-                current_level_no += 1
-                current_level = level_list[current_level_no]
-                current_level.world_shift = 0
-                player.level = current_level
-            else:
-                # Out of levels. This just exits the program.
-                # You'll want to do something better.
-                player.rect.x = 120
-                current_level_no = 0
-                current_level = level_list[current_level_no]
-                current_level.world_shift = 0
-                player.level = current_level
+        
  
         # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
         current_level.draw(screen)

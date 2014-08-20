@@ -2,25 +2,27 @@ import pygame
 import const
 
 class Camera(object):
-    i=39
-    
+    i = 0
     def __init__(self, width, height):
         self.rect = pygame.Rect(0,0, width, height)
-        self.i = 39
+        self.i = 29
 
     def apply(self, target):
-        print self.rect.topleft
         target.rect = target.rect.move(self.rect.topleft)
     
     def update(self, target):
         l, t, _, _ = target.rect # l = left,  t = top
         _, _, w, h = self.rect      # w = width, h = height
-        self.i=self.i+1
-        if self.i == 40:
+        l, t, _ , _ = -l+(const.SCREEN_WIDTH/2), -t+(const.SCREEN_HEIGHT/2), w, h
+        self.i = self.i+1
+        if self.i >= 30:
+            print "printing"
             print l
-            print t
-            print w
-            print h
-            self.i=0
-        self.rect = pygame.Rect(-l+(const.SCREEN_WIDTH/2), -t+(const.SCREEN_HEIGHT/2), w, h)
-        #self.rect = self.rect.clamp(target.rect)
+        l = max(0,l)
+        l = (-(self.rect.width-const.SCREEN_WIDTH), l)
+        t = max(-(self.rect.height-const.SCREEN_HEIGHT), t)
+        t = min(0,t)
+        if self.i >= 30:
+            print l
+            self.i = 0
+        self.rect = pygame.Rect(l,t,w,h)
