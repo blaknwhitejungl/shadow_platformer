@@ -218,7 +218,7 @@ class Level(object):
  
     # How far this world has been scrolled left/right
     world_shift = 0
-    level_limit = 1000
+    level_limit = 1500
  
     def __init__(self, player, platforms):
         """ Constructor. Pass in a handle to player. Needed for when moving
@@ -256,12 +256,6 @@ class Level(object):
         """ Update everything in this level."""
         self.platform_list.update()
         self.enemy_list.update()
-
-        self.camera.apply(self.player)
-        for platform in self.platform_list:
-            self.camera.apply(platform)
-        for enemy in self.enemy_list:
-            self.camera.apply(enemy)
  
     def draw(self, screen):
         """ Draw everything on this level. """
@@ -423,7 +417,14 @@ def main():
         # Update items in the level
         current_level.update()
 
+        # Update the camera then apply it to everything
         current_level.camera.update(player)
+        current_level.camera.apply(player)
+        for platform in current_level.platform_list:
+            current_level.camera.apply(platform)
+        for enemy in current_level.enemy_list:
+            current_level.camera.apply(enemy)
+        
         #current_level.camera.apply(player)
 #        # If the player gets near the right side, shift the world left (-x)
 #        if player.rect.right > 500:
