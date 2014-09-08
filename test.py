@@ -348,6 +348,7 @@ class Level_02(Level):
         block.level = self
         self.platform_list.add(block)
 
+# Create a level from the given schema and set it as the current level
 def setLevel(level_schema, player):
     currentLevel = Level(player, level_schema)
     player.level = currentLevel
@@ -455,7 +456,7 @@ def main():
         pygame.display.flip()
  
     # Be IDLE friendly. If you forget this line, the program will 'hang'
-    # on exit.
+    # on exit
     pygame.quit()
  
 if __name__ == "__main__":
