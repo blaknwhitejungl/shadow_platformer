@@ -90,6 +90,9 @@ class Player(pygame.sprite.Sprite):
  
             if isinstance(block, MovingPlatform):
                 self.rect.x += block.change_x
+        print "Position"
+        print self.rect.x
+        print self.rect.y
  
     def calc_grav(self):
         """ Calculate effect of gravity. """
@@ -106,7 +109,7 @@ class Player(pygame.sprite.Sprite):
         # when working with a platform moving down.
         self.rect.y += 2
         platform_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
-        self.rect.y -= 2
+        self.rect.y -= 2 
  
         # If it is ok to jump, set our speed upwards
         if len(platform_hit_list) > 0 or self.rect.bottom >= const.SCREEN_HEIGHT:
@@ -227,7 +230,6 @@ class Level(object):
         self.enemy_list = pygame.sprite.Group()
         self.player = player
 
-
         for platform in platforms:
             block = Platform(platform[0], platform[1])
             block.rect.x = platform[2]
@@ -242,7 +244,7 @@ class Level(object):
         block.player = self.player
         self.platform_list.add(block)
         #Add the back wall
-        block = Platform(10, const.SCREEN_HEIGHT)
+        block = Platform(10, const.SCREEN_HEIGHT - 200)
         block.rect.x = 0
         block.rect.y = 0
         block.player = self.player
@@ -345,6 +347,16 @@ class Level_02(Level):
         block.player = self.player
         block.level = self
         self.platform_list.add(block)
+
+def setLevel(level_schema, player):
+    currentLevel = Level(player, level_schema)
+    player.level = currentLevel
+
+    player.rect.x = 0
+    player.rect.y = const.SCREEN_HEIGHT - player.rect.height - 10
+
+    return currentLevel
+    
  
 def main():
     """ Main Program """
@@ -357,9 +369,8 @@ def main():
     lv2 = [[210, 70, 500, 550],
            [210, 70, 800, 400],
            [210, 70, 1000, 500],
-           [210, 70, 1120, 280],
            ]
- 
+        
     # Set the height and width of the screen
     size = [const.SCREEN_WIDTH, const.SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
@@ -371,20 +382,15 @@ def main():
  
     # Create all the levels
     level_list = []
-    level_list.append(Level(player, lv1))
-    level_list.append(Level(player, lv2))
+    level_list.append(lv1)
+    level_list.append(lv2)
  
-    # Set the current level
+    # Set the current level CHANGING THIS TO BE IN THE LOOP, PULL IT INTO ITS OWN FUNCTION
     current_level_no = 0
-    current_level = level_list[current_level_no]
- 
+    current_level = setLevel(level_list[current_level_no], player)
     active_sprite_list = pygame.sprite.Group()
-    player.level = current_level
- 
-    player.rect.x = 340
-    player.rect.y = const.SCREEN_HEIGHT - player.rect.height
     active_sprite_list.add(player)
- 
+    
     #Loop until the user clicks the close button.
     done = False
  
@@ -424,21 +430,19 @@ def main():
             current_level.camera.apply(platform)
         for enemy in current_level.enemy_list:
             current_level.camera.apply(enemy)
-        
-        #current_level.camera.apply(player)
-#        # If the player gets near the right side, shift the world left (-x)
-#        if player.rect.right > 500:
-#            diff = player.rect.right - 500
-#            player.rect.right = 500
-#            current_level.shift_world(-diff)
-  
-#        # If the player gets near the left side, shift the world right (+x)
-#        if player.rect.left < 120:
-#            diff = 120 - player.rect.left
-#            player.rect.left = 120
-#            current_level.shift_world(diff)
-        
- 
+
+        # If the player gets to the end of the level, go to the next level
+        current_position = player.rect.x
+        if current_position >= const.SCREEN_WIDTH:
+            if current_level_no < len(level_list)-1:
+                current_level_no += 1
+                current_level = setLevel(level_list[current_level_no], player)
+                player.level = current_level
+            else:
+                current_level_no = 0
+                current_level = setLevel(level_list[current_level_no], player)
+                player.level = current_level
+
         # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
         current_level.draw(screen)
         active_sprite_list.draw(screen)

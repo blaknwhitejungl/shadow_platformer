@@ -21,35 +21,42 @@ class Camera(object):
         worldWidth, worldHeight = self.max
         
         shiftX = targX-(const.SCREEN_WIDTH/2)
-        if(shiftX > const.SCROLL_RIGHT or shiftX < const.SCROLL_LEFT):
+        
+        if(shiftX > const.SCROLL_RIGHT):
+            # Don't snap the player to center
+            shiftX = shiftX - const.SCROLL_RIGHT
+            
+            # Stop at the right edge of the world
             shiftX = min(shiftX, worldWidth-(camX + const.SCREEN_WIDTH))
-            shiftX = max(shiftX, -(camX))
+            
+        elif (shiftX < const.SCROLL_LEFT):
+            # Don't snap the player to center
+            shiftX = shiftX - const.SCROLL_LEFT
+            
+            # Stop at the left edge of the world
+            shiftX = max(shiftX, -camX)
+            
         else:
             shiftX = 0
             
         shiftY = targY-(const.SCREEN_HEIGHT/2)
-        if(shiftX > const.SCROLL_BOTTOM or shiftX < const.SCROLL_TOP):
+
+        if(shiftY > const.SCROLL_BOTTOM):
+            # Don't snap the player to center
+            shiftY = shiftY - const.SCROLL_BOTTOM
+            
+            # Stop at the bottom edge of the world
             shiftY = min(shiftY, worldHeight-(camY + const.SCREEN_HEIGHT))
-            shiftY = max(shiftY, -(camY))
+            
+        elif (shiftY < const.SCROLL_TOP):
+            # Don't snap the player to center
+            shiftY = shiftY - const.SCROLL_TOP
+            
+            # Stop at the left edge of the world
+            shiftY = max(shiftY, -camY)
+            
         else:
             shiftY = 0
         
         self.pos = (camX + shiftX, camY + shiftY)
         self.delta = (shiftX, shiftY)
-
-
-        #l, t, _, _ = target.rect # l = left,  t = top
-        #_, _, w, h = self.rect      # w = width, h = height
-        #self.rect = pygame.Rect(-l+const.SCREEN_WIDTH/2, -t+const.SCREEN_HEIGHT/2, w, h)
-        #print self.delta
-        #self.i = self.i+1
-        #if self.i >= 30:
-        #    print "printing"
-        #    print l
-        #l = min(0,l)
-        #l = max(-(self.rect.width-const.SCREEN_WIDTH), l)
-        #t = max(-(self.rect.height-const.SCREEN_HEIGHT), t)
-        #t = min(0,t)
-        #if self.i >= 30:
-        #    print l
-        #    self.i = 0

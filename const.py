@@ -13,7 +13,7 @@ SCREEN_HEIGHT = 600
 
 # Distance from the center of the screen before we start scrolling
 # in the given direction
-SCROLL_LEFT = -SCREEN_WIDTH/10
-SCROLL_RIGHT = 4 * SCREEN_WIDTH/10
+SCROLL_LEFT = -4 * SCREEN_WIDTH/10
+SCROLL_RIGHT = SCREEN_WIDTH/10
 SCROLL_TOP = -SCREEN_HEIGHT/4
 SCROLL_BOTTOM = SCREEN_HEIGHT/4
